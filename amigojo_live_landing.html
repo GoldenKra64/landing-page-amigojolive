@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AmigojoLive — Red Pedagógica Fe y Alegría</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rojo: #C0392B;
+    --rojo-oscuro: #922B21;
+    --rojo-vivo: #E74C3C;
+    --rojo-suave: #FADBD8;
+    --rojo-palido: #FDEDEC;
+    --blanco: #FFFFFF;
+    --crema: #FFF9F9;
+    --gris-suave: #F8F8F8;
+    --gris-texto: #555555;
+    --gris-oscuro: #222222;
+    --sombra: 0 4px 24px rgba(192,57,43,0.12);
+    --sombra-hover: 0 8px 40px rgba(192,57,43,0.22);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--blanco);
+    color: var(--gris-oscuro);
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(192,57,43,0.1);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 900;
+    color: var(--rojo);
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--gris-oscuro); }
+  nav ul { list-style: none; display: flex; gap: 2rem; }
+  nav ul a {
+    text-decoration: none; color: var(--gris-texto);
+    font-size: 0.9rem; font-weight: 500;
+    transition: color 0.2s;
+  }
+  nav ul a:hover { color: var(--rojo); }
+  .btn-nav {
+    background: var(--rojo); color: var(--blanco);
+    border: none; padding: 0.5rem 1.25rem;
+    border-radius: 2rem; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: background 0.2s, transform 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none;
+  }
+  .btn-nav:hover { background: var(--rojo-oscuro); transform: translateY(-1px); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fff 55%, var(--rojo-palido) 100%);
+    display: flex; align-items: center;
+    padding: 120px 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -80px; right: -120px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(192,57,43,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '✦';
+    position: absolute; bottom: 80px; left: 5%;
+    font-size: 3rem; color: rgba(192,57,43,0.08);
+    animation: flotar 4s ease-in-out infinite;
+  }
+  @keyframes flotar {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+
+  .hero-inner {
+    max-width: 1100px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--rojo-palido); color: var(--rojo);
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 2rem;
+    border: 1px solid rgba(192,57,43,0.2);
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900;
+    line-height: 1.1; color: var(--gris-oscuro);
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 .acento { color: var(--rojo); display: block; }
+  .hero-desc {
+    font-size: 1.05rem; color: var(--gris-texto);
+    line-height: 1.75; max-width: 480px; margin-bottom: 2rem;
+  }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primario {
+    background: var(--rojo); color: var(--blanco);
+    padding: 0.85rem 2rem; border-radius: 3rem;
+    font-weight: 600; font-size: 1rem; text-decoration: none;
+    box-shadow: 0 6px 24px rgba(192,57,43,0.35);
+    transition: all 0.2s; display: inline-block;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-primario:hover { background: var(--rojo-oscuro); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(192,57,43,0.4); }
+  .btn-secundario {
+    background: transparent; color: var(--rojo);
+    padding: 0.85rem 2rem; border-radius: 3rem;
+    font-weight: 600; font-size: 1rem; text-decoration: none;
+    border: 2px solid var(--rojo); transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-secundario:hover { background: var(--rojo-palido); }
+
+  /* tarjeta flotante hero */
+  .hero-card {
+    background: var(--blanco);
+    border-radius: 20px;
+    box-shadow: var(--sombra-hover);
+    padding: 1.75rem;
+    border: 1px solid rgba(192,57,43,0.08);
+    animation: entrarDerecha 0.8s ease both;
+    position: relative;
+  }
+  @keyframes entrarDerecha {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .post-preview {
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .post-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px; border-radius: 12px;
+    background: var(--gris-suave); transition: background 0.2s;
+  }
+  .post-item:hover { background: var(--rojo-palido); }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+  }
+  .av-rojo { background: var(--rojo); color: white; }
+  .av-gris { background: #ddd; color: #666; }
+  .av-anon { background: var(--gris-oscuro); color: white; }
+  .post-content { flex: 1; }
+  .post-user { font-weight: 600; font-size: 0.82rem; color: var(--gris-oscuro); }
+  .post-user .tag {
+    font-size: 0.7rem; background: var(--rojo-palido); color: var(--rojo);
+    padding: 2px 7px; border-radius: 2rem; margin-left: 6px; font-weight: 500;
+  }
+  .post-user .tag-anon {
+    font-size: 0.7rem; background: #f0f0f0; color: #888;
+    padding: 2px 7px; border-radius: 2rem; margin-left: 6px;
+  }
+  .post-text { font-size: 0.84rem; color: var(--gris-texto); margin-top: 3px; line-height: 1.5; }
+  .post-reacts { display: flex; gap: 8px; margin-top: 6px; }
+  .react-btn {
+    font-size: 0.75rem; color: var(--gris-texto);
+    background: white; border: 1px solid #eee;
+    border-radius: 2rem; padding: 2px 10px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .react-btn:hover { border-color: var(--rojo); color: var(--rojo); }
+  .hero-card-label {
+    text-align: center; font-size: 0.75rem; color: #aaa;
+    margin-top: 1rem; font-weight: 500;
+  }
+
+  /* ─── STATS ─── */
+  .stats {
+    background: var(--rojo);
+    padding: 3rem 2rem;
+  }
+  .stats-inner {
+    max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    text-align: center; gap: 2rem;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem; font-weight: 900; color: white;
+    display: block;
+  }
+  .stat-label { font-size: 0.82rem; color: rgba(255,255,255,0.75); font-weight: 500; }
+
+  /* ─── SECCIONES GENERALES ─── */
+  section { padding: 5rem 2rem; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-tag {
+    display: inline-block;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--rojo); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 900;
+    line-height: 1.15; margin-bottom: 1rem; color: var(--gris-oscuro);
+  }
+  .section-sub {
+    font-size: 1rem; color: var(--gris-texto); max-width: 560px;
+    line-height: 1.7; margin-bottom: 2.5rem;
+  }
+
+  /* ─── QUÉ ES ─── */
+  .que-es { background: var(--crema); }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem; margin-top: 0.5rem;
+  }
+  .feature-card {
+    background: white; border-radius: 16px;
+    padding: 1.75rem 1.5rem;
+    border: 1px solid rgba(192,57,43,0.1);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: var(--sombra-hover); }
+  .feature-icon {
+    font-size: 2rem; margin-bottom: 1rem;
+    display: block;
+  }
+  .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--gris-oscuro); }
+  .feature-card p { font-size: 0.88rem; color: var(--gris-texto); line-height: 1.6; }
+  .feature-card .chip {
+    display: inline-block; margin-top: 0.75rem;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--rojo); background: var(--rojo-palido);
+    padding: 3px 10px; border-radius: 2rem;
+  }
+
+  /* ─── DEMO PUBLICACIÓN ─── */
+  .demo-section { background: white; }
+  .demo-layout {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start;
+  }
+  .demo-form-wrapper {
+    background: var(--blanco); border-radius: 20px;
+    border: 1px solid rgba(192,57,43,0.12);
+    box-shadow: var(--sombra); overflow: hidden;
+  }
+  .demo-form-header {
+    background: var(--rojo); padding: 1rem 1.5rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .demo-form-header span { color: white; font-weight: 700; font-size: 0.95rem; }
+  .demo-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+  .demo-form-body { padding: 1.5rem; }
+
+  .tipo-selector {
+    display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap;
+  }
+  .tipo-btn {
+    padding: 6px 14px; border-radius: 2rem; font-size: 0.82rem; font-weight: 600;
+    border: 1.5px solid #eee; background: white; cursor: pointer;
+    transition: all 0.15s; font-family: 'DM Sans', sans-serif; color: var(--gris-texto);
+  }
+  .tipo-btn.activo, .tipo-btn:hover {
+    border-color: var(--rojo); color: var(--rojo); background: var(--rojo-palido);
+  }
+
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px; color: var(--gris-oscuro); }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%; padding: 0.65rem 0.9rem;
+    border: 1.5px solid #eee; border-radius: 10px;
+    font-size: 0.9rem; font-family: 'DM Sans', sans-serif;
+    color: var(--gris-oscuro); background: var(--gris-suave);
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  .form-group input:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--rojo);
+    background: white;
+  }
+  .anon-toggle {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.85rem; color: var(--gris-texto); margin-bottom: 1rem;
+    cursor: pointer;
+  }
+  .anon-toggle input[type=checkbox] { accent-color: var(--rojo); width: 16px; height: 16px; }
+
+  .btn-publicar {
+    width: 100%; padding: 0.85rem;
+    background: var(--rojo); color: white; border: none; border-radius: 10px;
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 4px 16px rgba(192,57,43,0.3);
+  }
+  .btn-publicar:hover { background: var(--rojo-oscuro); transform: translateY(-1px); }
+
+  /* feed demo */
+  .feed-demo { display: flex; flex-direction: column; gap: 1rem; }
+  .feed-post {
+    background: white; border-radius: 14px;
+    border: 1px solid rgba(192,57,43,0.1);
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    animation: aparece 0.4s ease both;
+    transition: box-shadow 0.2s;
+  }
+  .feed-post:hover { box-shadow: var(--sombra); }
+  @keyframes aparece {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .feed-post-header { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+  .feed-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.78rem; flex-shrink: 0;
+  }
+  .feed-name { font-weight: 700; font-size: 0.88rem; }
+  .feed-tipo {
+    font-size: 0.7rem; padding: 2px 8px; border-radius: 2rem;
+    font-weight: 600;
+  }
+  .tipo-consejo { background: #EAF4FB; color: #1A6B99; }
+    .tipo-frustracion { background: #FEF3E2; color: #B37300; }
+  .tipo-comentario { background: var(--rojo-palido); color: var(--rojo); }
+  .tipo-anonimo { background: #f0f0f0; color: #666; }
+  .feed-body { font-size: 0.88rem; color: var(--gris-texto); line-height: 1.55; margin-bottom: 10px; }
+  .feed-actions { display: flex; gap: 10px; }
+  .feed-btn {
+    font-size: 0.78rem; color: var(--gris-texto);
+    background: var(--gris-suave); border: none;
+    padding: 4px 12px; border-radius: 2rem; cursor: pointer;
+    transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  }
+  .feed-btn:hover { background: var(--rojo-palido); color: var(--rojo); }
+  .feed-btn.liked { background: var(--rojo-palido); color: var(--rojo); }
+  .nuevo-badge {
+    font-size: 0.7rem; color: white; background: var(--rojo);
+    padding: 2px 7px; border-radius: 2rem; margin-left: auto;
+    font-weight: 600;
+  }
+
+  /* ─── REGISTRO ─── */
+  .registro-section { background: var(--crema); }
+  .registro-layout {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+  .registro-copy h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; margin-bottom: 1rem; }
+  .registro-copy p { font-size: 0.95rem; color: var(--gris-texto); line-height: 1.7; margin-bottom: 1.5rem; }
+  .beneficios { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+  .beneficios li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.9rem; color: var(--gris-texto);
+  }
+  .beneficios li::before {
+    content: '✓'; font-weight: 700; color: var(--rojo);
+    background: var(--rojo-palido); width: 22px; height: 22px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; flex-shrink: 0;
+  }
+
+  .registro-form-card {
+    background: white; border-radius: 20px;
+    padding: 2rem; box-shadow: var(--sombra-hover);
+    border: 1px solid rgba(192,57,43,0.08);
+  }
+  .registro-form-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 900; margin-bottom: 1.5rem;
+    color: var(--gris-oscuro);
+  }
+  .registro-form-card h3 span { color: var(--rojo); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .campo {
+    display: flex; flex-direction: column; gap: 5px; margin-bottom: 1rem;
+  }
+  .campo label { font-size: 0.82rem; font-weight: 600; color: var(--gris-oscuro); }
+  .campo input, .campo select {
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid #eee; border-radius: 10px;
+    font-size: 0.9rem; font-family: 'DM Sans', sans-serif;
+    background: var(--gris-suave); color: var(--gris-oscuro);
+    transition: border-color 0.2s;
+  }
+  .campo input:focus, .campo select:focus {
+    outline: none; border-color: var(--rojo); background: white;
+  }
+  .privacidad-nota {
+    font-size: 0.75rem; color: #aaa; text-align: center; margin-top: 0.5rem;
+    line-height: 1.5;
+  }
+  #exito-msg {
+    display: none;
+    background: linear-gradient(135deg, var(--rojo), var(--rojo-oscuro));
+    color: white; border-radius: 12px; padding: 1.25rem;
+    text-align: center; font-weight: 600; font-size: 0.95rem;
+    margin-top: 1rem;
+  }
+
+  /* tabla de interesados */
+  .tabla-section { background: white; }
+  .tabla-wrapper { overflow-x: auto; border-radius: 14px; border: 1px solid rgba(192,57,43,0.1); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  thead { background: var(--rojo); }
+  thead th { color: white; font-weight: 600; text-align: left; padding: 12px 16px; font-size: 0.82rem; letter-spacing: 0.03em; }
+  tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.15s; }
+  tbody tr:hover { background: var(--rojo-palido); }
+  tbody td { padding: 11px 16px; color: var(--gris-texto); }
+  .badge-activo {
+    display: inline-block; font-size: 0.72rem; font-weight: 600;
+    padding: 3px 10px; border-radius: 2rem;
+    background: #EAF7EF; color: #1E8449;
+  }
+  .tabla-footer { padding: 0.75rem 1rem; background: var(--gris-suave); font-size: 0.8rem; color: #aaa; text-align: right; border-top: 1px solid #f0f0f0; }
+
+  /* ─── CTA FINAL ─── */
+  .cta-final {
+    background: linear-gradient(135deg, var(--rojo), var(--rojo-oscuro));
+    padding: 5rem 2rem; text-align: center;
+  }
+  .cta-final h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem); color: white; font-weight: 900;
+    margin-bottom: 1rem;
+  }
+  .cta-final p { color: rgba(255,255,255,0.8); font-size: 1rem; margin-bottom: 2rem; line-height: 1.7; }
+  .btn-cta-final {
+    display: inline-block; background: white; color: var(--rojo);
+    padding: 1rem 2.5rem; border-radius: 3rem; font-weight: 700; font-size: 1.05rem;
+    text-decoration: none; box-shadow: 0 6px 32px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-cta-final:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--gris-oscuro); color: rgba(255,255,255,0.5);
+    text-align: center; padding: 2rem; font-size: 0.82rem;
+  }
+  footer strong { color: white; }
+
+  /* ─── RESPONSIVO ─── */
+  @media (max-width: 768px) {
+    nav ul { display: none; }
+    .hero-inner, .demo-layout, .registro-layout { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .hero { padding-top: 100px; }
+  }
+
+  /* ─── ANIMACIONES SCROLL ─── */
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Amigojo<span>Live</span></div>
+  <ul>
+    <li><a href="#que-es">¿Qué es?</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#registro">Registro</a></li>
+    <li><a href="#datos">Docentes</a></li>
+  </ul>
+  <a href="#registro" class="btn-nav">¡Quiero entrar!</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">🏫 Fe y Alegría · Red Pedagógica</div>
+      <h1>
+        Tu espacio para
+        <span class="acento">enseñar, compartir</span>
+        y crecer juntos
+      </h1>
+      <p class="hero-desc">
+        AmigojoLive es la red social exclusiva para docentes de las Unidades Educativas Fe y Alegría.
+        Comparte consejos, expresa tus vivencias, conecta con colegas — con o sin nombre.
+      </p>
+      <div class="hero-btns">
+        <a href="#registro" class="btn-primario">🚀 Quiero registrarme</a>
+        <a href="#que-es" class="btn-secundario">Conocer más</a>
+      </div>
+    </div>
+
+    <!-- Tarjeta preview del feed -->
+    <div class="hero-card">
+      <div class="post-preview">
+        <div style="font-size:0.78rem;font-weight:700;color:#bbb;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">Vista previa del feed</div>
+
+        <div class="post-item">
+          <div class="avatar av-rojo">ML</div>
+          <div class="post-content">
+            <div class="post-user">María López <span class="tag">💡 Consejo</span></div>
+            <div class="post-text">Usar Kahoot antes de cada evaluación mejoró la participación de mis estudiantes un 60%.</div>
+            <div class="post-reacts">
+              <button class="react-btn">❤️ 24</button>
+              <button class="react-btn">💬 8</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-item">
+          <div class="avatar av-anon">?</div>
+          <div class="post-content">
+            <div class="post-user">Anónimo <span class="tag-anon">🔒 Privado</span></div>
+            <div class="post-text">A veces siento que no tenemos suficiente apoyo psicológico para manejar tantos casos difíciles.</div>
+            <div class="post-reacts">
+              <button class="react-btn">🫂 52</button>
+              <button class="react-btn">💬 19</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-item">
+          <div class="avatar av-gris">CR</div>
+          <div class="post-content">
+            <div class="post-user">Carlos R. <span class="tag">📣 Opinión</span></div>
+            <div class="post-text">¿Alguien más trabaja con proyectos interdisciplinarios? Quiero compartir mi experiencia.</div>
+            <div class="post-reacts">
+              <button class="react-btn">👍 17</button>
+              <button class="react-btn">💬 5</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-card-label">✨ Solo para docentes verificados</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div>
+      <span class="stat-num">🏫</span>
+      <span class="stat-label">Red Pedagógica Fe y Alegría</span>
+    </div>
+    <div>
+      <span class="stat-num">4</span>
+      <span class="stat-label">tipos de publicación</span>
+    </div>
+    <div>
+      <span class="stat-num">🔒</span>
+      <span class="stat-label">Comentarios anónimos</span>
+    </div>
+    <div>
+      <span class="stat-num">100%</span>
+      <span class="stat-label">exclusivo para docentes</span>
+    </div>
+  </div>
+</div>
+
+<!-- QUÉ ES -->
+<section class="que-es fade-in" id="que-es">
+  <div class="section-inner">
+    <span class="section-tag">✦ El proyecto</span>
+    <h2 class="section-title">Una comunidad hecha por docentes,<br>para docentes</h2>
+    <p class="section-sub">AmigojoLive nace como una <em>Red de Práctica Pedagógica</em> entre las UE Fe y Alegría — un lugar seguro donde la experiencia de cada maestro tiene valor.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">💡</span>
+        <h3>Comparte consejos</h3>
+        <p>Publica estrategias, recursos y técnicas que funcionan en el aula. Ayuda a tus colegas con lo que tú ya aprendiste.</p>
+        <span class="chip">Práctica pedagógica</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🫂</span>
+        <h3>Expresa frustraciones</h3>
+        <p>Tienes un espacio para desahogarte, ser escuchado y encontrar solidaridad real entre quienes viven lo mismo.</p>
+        <span class="chip">Bienestar docente</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔒</span>
+        <h3>Comentarios anónimos</h3>
+        <p>¿Quieres opinar sin comprometerte? Puedes publicar de forma completamente anónima, con total privacidad.</p>
+        <span class="chip">Voz sin miedo</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🌐</span>
+        <h3>Red entre instituciones</h3>
+        <p>Conecta con docentes de todas las unidades educativas Fe y Alegría del Ecuador y más allá.</p>
+        <span class="chip">Red nacional</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📚</span>
+        <h3>Recursos pedagógicos</h3>
+        <p>Sube y descarga materiales, guías, y herramientas creadas por la comunidad docente.</p>
+        <span class="chip">Banco de recursos</span>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🏆</span>
+        <h3>Reconocimiento</h3>
+        <p>Los aportes de cada docente son valorados. El conocimiento compartido construye reputación y comunidad.</p>
+        <span class="chip">Comunidad activa</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section class="demo-section fade-in" id="demo">
+  <div class="section-inner">
+    <span class="section-tag">✦ Prueba de publicación</span>
+    <h2 class="section-title">¿Cómo funciona?<br>Pruébalo ahora mismo</h2>
+    <p class="section-sub">Esta es una demo interactiva. Simula una publicación y mira cómo aparecería en el feed de la comunidad.</p>
+
+    <div class="demo-layout">
+      <!-- Formulario -->
+      <div class="demo-form-wrapper">
+        <div class="demo-form-header">
+          <div class="demo-dot"></div><div class="demo-dot"></div><div class="demo-dot"></div>
+          <span>✏️ Nueva publicación</span>
+        </div>
+        <div class="demo-form-body">
+          <div class="form-group">
+            <label>Tipo de publicación</label>
+            <div class="tipo-selector">
+              <button class="tipo-btn activo" data-tipo="Consejo">💡 Consejo</button>
+              <button class="tipo-btn" data-tipo="Frustración">😤 Frustración</button>
+              <button class="tipo-btn" data-tipo="Opinión">📣 Opinión</button>
+              <button class="tipo-btn" data-tipo="Recurso">📎 Recurso</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Tu nombre (o alias)</label>
+            <input type="text" id="demo-nombre" placeholder="Ej: Profe Ana o deja vacío para anónimo">
+          </div>
+          <div class="form-group">
+            <label>¿Qué quieres compartir?</label>
+            <textarea id="demo-texto" rows="4" placeholder="Escribe tu consejo, experiencia, comentario..."></textarea>
+          </div>
+          <label class="anon-toggle">
+            <input type="checkbox" id="demo-anon"> Publicar de forma anónima 🔒
+          </label>
+          <button class="btn-publicar" id="btn-demo-publicar">📤 Publicar en el feed</button>
+        </div>
+      </div>
+
+      <!-- Feed demo -->
+      <div>
+        <div style="font-size:0.82rem;font-weight:700;color:#bbb;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1rem;">
+          Feed de la comunidad
+        </div>
+        <div class="feed-demo" id="feed-demo">
+          <!-- Posts de ejemplo -->
+          <div class="feed-post">
+            <div class="feed-post-header">
+              <div class="feed-avatar" style="background:var(--rojo);color:white;">ML</div>
+              <div>
+                <div class="feed-name">María López</div>
+                <span class="feed-tipo tipo-consejo">💡 Consejo</span>
+              </div>
+              <div class="nuevo-badge">reciente</div>
+            </div>
+            <div class="feed-body">Usar mapas conceptuales digitales con mis estudiantes de bachillerato cambió la dinámica de la clase completamente.</div>
+            <div class="feed-actions">
+              <button class="feed-btn" onclick="like(this)">❤️ 14</button>
+              <button class="feed-btn">💬 Comentar</button>
+            </div>
+          </div>
+
+          <div class="feed-post">
+            <div class="feed-post-header">
+              <div class="feed-avatar" style="background:#555;color:white;">?</div>
+              <div>
+                <div class="feed-name">Anónimo</div>
+                <span class="feed-tipo tipo-anonimo">🔒 Anónimo</span>
+              </div>
+            </div>
+            <div class="feed-body">¿Por qué los padres de familia esperan respuesta inmediata a cualquier hora del día? Necesitamos límites claros.</div>
+            <div class="feed-actions">
+              <button class="feed-btn" onclick="like(this)">🫂 31</button>
+              <button class="feed-btn">💬 Comentar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGISTRO -->
+<section class="registro-section fade-in" id="registro">
+  <div class="section-inner">
+    <div class="registro-layout">
+      <div class="registro-copy">
+        <span class="section-tag">✦ Únete a la red</span>
+        <h2 class="section-title">Registra tu interés y sé de los primeros</h2>
+        <p>Déjanos tu correo y datos básicos para mantenerte informado sobre el lanzamiento oficial de AmigojoLive. No spam, solo novedades importantes.</p>
+        <ul class="beneficios">
+          <li>Acceso anticipado a la plataforma</li>
+          <li>Notificación en el lanzamiento oficial</li>
+          <li>Posibilidad de ser beta tester</li>
+          <li>Comunidad exclusiva para docentes Fe y Alegría</li>
+          <li>Total confidencialidad de tus datos</li>
+        </ul>
+      </div>
+
+      <div class="registro-form-card">
+        <h3>Quiero unirme a <span>AmigojoLive</span> 🎉</h3>
+        <div class="form-row">
+          <div class="campo">
+            <label>Nombre</label>
+            <input type="text" id="reg-nombre" placeholder="Tu nombre">
+          </div>
+          <div class="campo">
+            <label>Apellido</label>
+            <input type="text" id="reg-apellido" placeholder="Tu apellido">
+          </div>
+        </div>
+        <div class="campo">
+          <label>Correo institucional</label>
+          <input type="email" id="reg-email" placeholder="nombre@feyalegria.edu.ec">
+        </div>
+        <div class="campo">
+          <label>Unidad Educativa</label>
+          <select id="reg-ue">
+            <option value="">— Selecciona tu UE —</option>
+            <option>UE Fe y Alegría Quito Norte</option>
+            <option>UE Fe y Alegría Quito Sur</option>
+            <option>UE Fe y Alegría Guayaquil</option>
+            <option>UE Fe y Alegría Cuenca</option>
+            <option>UE Fe y Alegría Esmeraldas</option>
+            <option>Otra UE Fe y Alegría</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label>Área de enseñanza</label>
+          <input type="text" id="reg-area" placeholder="Ej: Matemáticas, Ciencias Naturales...">
+        </div>
+        <button class="btn-publicar" id="btn-registrar" style="margin-top:0.5rem;">
+          ✅ Registrar mi interés
+        </button>
+        <p class="privacidad-nota">🔐 Tus datos son confidenciales y solo se usarán para contactarte sobre AmigojoLive.</p>
+        <div id="exito-msg">
+          🎉 ¡Gracias! Te contactaremos cuando lancemos. Eres parte de la comunidad.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TABLA DE INTERESADOS -->
+<section class="tabla-section fade-in" id="datos" style="display:none;">
+  <div class="section-inner">
+    <span class="section-tag">✦ Base de datos</span>
+    <h2 class="section-title">Docentes registrados</h2>
+    <p class="section-sub">Panel de seguimiento de docentes interesados en la plataforma. Los nuevos registros aparecen aquí en tiempo real.</p>
+
+    <div class="tabla-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Unidad Educativa</th>
+            <th>Área</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-body">
+        </tbody>
+      </table>
+      <div class="tabla-footer" id="tabla-footer">3 docentes registrados</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="cta-final fade-in">
+  <h2>La docencia es más fácil<br>cuando no estás solo 🤝</h2>
+  <p>Únete a AmigojoLive y sé parte de la primera red pedagógica exclusiva para docentes Fe y Alegría.</p>
+  <a href="#registro" class="btn-cta-final">Quiero ser parte</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <strong>AmigojoLive</strong> — Red de Práctica Pedagógica UE Fe y Alegría | Hecho con ❤️ para docentes</p>
+</footer>
+
+<script>
+$(document).ready(function(){
+
+  /* ─── scroll fade in ─── */
+  const observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ $(e.target).addClass('visible'); }
+    });
+  }, { threshold: 0.12 });
+  $('.fade-in').each(function(){ observer.observe(this); });
+
+  /* ─── tipo selector demo ─── */
+  let tipoActivo = 'Consejo';
+  $('.tipo-btn').on('click', function(){
+    $('.tipo-btn').removeClass('activo');
+    $(this).addClass('activo');
+    tipoActivo = $(this).data('tipo');
+  });
+
+  /* ─── reacciones demo hero ─── */
+  $(document).on('click', '.react-btn', function(){
+    let num = parseInt($(this).text().replace(/\D/g,''));
+    let emoji = $(this).text().replace(/[\d]/g,'').trim();
+    $(this).text(emoji + ' ' + (num+1));
+  });
+
+  /* ─── publicar en feed demo ─── */
+  $('#btn-demo-publicar').on('click', function(){
+    const nombre = $('#demo-nombre').val().trim();
+    const texto = $('#demo-texto').val().trim();
+    const esAnon = $('#demo-anon').is(':checked');
+
+    if(!texto){ alert('Escribe algo para publicar 📝'); return; }
+
+    const displayNombre = esAnon ? 'Anónimo' : (nombre || 'Docente');
+    const inicial = esAnon ? '?' : displayNombre.charAt(0).toUpperCase();
+    const bgAvatar = esAnon ? '#555' : '#C0392B';
+    const tipoLabel = esAnon ? '🔒 Anónimo' : tipoIcono(tipoActivo);
+    const tipoClass = esAnon ? 'tipo-anonimo' : tipoCls(tipoActivo);
+
+    const nuevoPost = `
+      <div class="feed-post" style="animation-delay:0.05s">
+        <div class="feed-post-header">
+          <div class="feed-avatar" style="background:${bgAvatar};color:white;">${inicial}</div>
+          <div>
+            <div class="feed-name">${displayNombre}</div>
+            <span class="feed-tipo ${tipoClass}">${tipoLabel}</span>
+          </div>
+          <div class="nuevo-badge">nuevo ✨</div>
+        </div>
+        <div class="feed-body">${$('<div>').text(texto).html()}</div>
+        <div class="feed-actions">
+          <button class="feed-btn" onclick="like(this)">❤️ 0</button>
+          <button class="feed-btn">💬 Comentar</button>
+        </div>
+      </div>`;
+
+    $('#feed-demo').prepend(nuevoPost);
+    $('#demo-texto').val('');
+    $('#demo-nombre').val('');
+    $('#demo-anon').prop('checked', false);
+  });
+
+  function tipoIcono(t){
+    const m = {'Consejo':'💡 Consejo','Frustración':'😤 Frustración','Opinión':'📣 Opinión','Recurso':'📎 Recurso'};
+    return m[t] || t;
+  }
+  function tipoCls(t){
+    const m = {'Consejo':'tipo-consejo','Frustración':'tipo-frustracion','Opinión':'tipo-comentario','Recurso':'tipo-consejo'};
+    return m[t] || 'tipo-consejo';
+  }
+
+  /* ─── registro ─── */
+  let contador = 0;
+  $('#btn-registrar').on('click', function(){
+    const nombre = $('#reg-nombre').val().trim();
+    const apellido = $('#reg-apellido').val().trim();
+    const email = $('#reg-email').val().trim();
+    const ue = $('#reg-ue').val();
+    const area = $('#reg-area').val().trim();
+
+    if(!nombre || !email || !ue){
+      alert('Por favor completa al menos: Nombre, Correo y Unidad Educativa 📋');
+      return;
+    }
+    if(!validarEmail(email)){
+      alert('Ingresa un correo válido 📧');
+      return;
+    }
+
+    contador++;
+    const fila = `<tr>
+      <td>${contador}</td>
+      <td>${$('<div>').text(nombre+' '+apellido).html()}</td>
+      <td>${$('<div>').text(email).html()}</td>
+      <td>${$('<div>').text(ue).html()}</td>
+      <td>${$('<div>').text(area||'—').html()}</td>
+      <td><span class="badge-activo">✓ Activo</span></td>
+    </tr>`;
+    $('#tabla-body').append(fila);
+    $('#tabla-footer').text(contador + ' docente' + (contador !== 1 ? 's' : '') + ' registrado' + (contador !== 1 ? 's' : ''));
+
+    if(contador === 1){
+      $('#datos').fadeIn(600);
+    }
+
+    // limpiar
+    $('#reg-nombre,#reg-apellido,#reg-email,#reg-area').val('');
+    $('#reg-ue').val('');
+    $('#exito-msg').fadeIn(300);
+    setTimeout(function(){ $('#exito-msg').fadeOut(400); }, 4000);
+
+    // scroll a tabla
+    $('html,body').animate({ scrollTop: $('#datos').offset().top - 80 }, 700);
+  });
+
+  function validarEmail(e){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  }
+});
+
+/* ─── like global ─── */
+function like(btn){
+  const $b = $(btn);
+  let num = parseInt($b.text().replace(/\D/g,''));
+  let emoji = $b.text().charAt(0);
+  if($b.hasClass('liked')){ $b.text(emoji+' '+(num-1)); }
+  else { $b.text(emoji+' '+(num+1)); }
+  $b.toggleClass('liked');
+}
+</script>
+</body>
+</html>
